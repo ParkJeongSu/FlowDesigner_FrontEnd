@@ -19,11 +19,10 @@ import VirtualizedList from "../components/VirtualizedList";
 import ComboBox from "../components/ComboBox";
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../redux/store/store' // useSeletor 에서 사용하기 위한 inititalState 타입
-import { changeFactoryName } from '../redux/slices/factorySlice' // 액션함수
-
-const mdTheme = createTheme();
+import { useDispatch, useSelector } from 'react-redux';
+import Flow from "../components/flow";
+const mdTheme = createTheme(
+);
 
 function DashboardContent() {
   const [open, setOpen] = React.useState(true);
@@ -62,7 +61,7 @@ function DashboardContent() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Flow Designer{factoryName}
+              Flow Designer {factoryName}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -97,12 +96,21 @@ function DashboardContent() {
             height: "100vh",
             overflow: "auto",
           }}
+          lg={{
+            backgroundColor: (theme) =>
+              theme.palette.mode === "light"
+                ? theme.palette.grey[100]
+                : theme.palette.grey[900],
+            flexGrow: 1,
+            height: "100vh",
+            overflow: "auto",
+          }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Container maxWidth={false} sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
 
-              <Grid item xs={12}>
+              <Grid item xs={12} md={12} lg={12} xl={12}>
                 <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
                   {/* comboBox & Save Button */}
                   <Stack direction="row" spacing={2}>
@@ -114,16 +122,17 @@ function DashboardContent() {
               </Grid>
 
 
-              <Grid item xs={12} md={12} lg={12}>
+              <Grid item xs={12} md={12} lg={12} xl={12} sx={{ height: '100%' }}>
                 <Paper
                   sx={{
                     p: 2,
                     display: "flex",
                     flexDirection: "column",
-                    height: 240,
+                    height: 240
                   }}
                 >
                   {/* Designer */}
+                  <Flow></Flow>
                 </Paper>
               </Grid>
 
