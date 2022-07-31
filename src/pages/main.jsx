@@ -21,16 +21,80 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import Flow from "../components/flow";
+import axios from "axios";
+import { changeFactoryName } from '../redux/slices/factorySlice'
+
 const mdTheme = createTheme(
 );
 
 function DashboardContent() {
+
+  const startEnd1 = [
+    {
+      id: '1',
+      name: 'Start',
+    },
+    {
+      id: '2',
+      name: 'End',
+    }
+  ];
+  const startEnd2 = [
+    {
+      id: '1',
+      name: 'Start',
+    },
+    {
+      id: '2',
+      name: 'End',
+    },
+    {
+      id: '3',
+      name: 'test',
+    },
+  ];
+  const startEnd3 = [
+    {
+      id: '1',
+      name: 'Start',
+    },
+    {
+      id: '2',
+      name: 'End',
+    },
+    {
+      id: '3',
+      name: 'test',
+    },
+  ];
+
+  let serverAddress =  "http://localhost:8080";
+  // let serverAddress =  "";
+
   const [open, setOpen] = React.useState(true);
+  const [factoryList, setfactoryList] = React.useState(null);
   const toggleDrawer = () => {
     setOpen(!open);
   };
   const factoryName = useSelector((state) => state.factory.factoryName);
   const dispatch = useDispatch();
+  
+  const getFactoryList = async () => {
+    try {
+      const response = await axios.get( serverAddress+"/factoryList");
+      response.data.map(data =>{ 
+        data['label'] = data['factoryName'];
+      })
+      setfactoryList(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  React.useEffect(() => {
+    console.log("맨 처음 렌더링될 때 한 번만 실행");
+    getFactoryList();
+  }, []);
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -80,9 +144,38 @@ function DashboardContent() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <VirtualizedList></VirtualizedList>
+          <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              sx={{ flexGrow: 1 }}
+            >
+              Start / End
+            </Typography>
+            <VirtualizedList dataList={startEnd1}></VirtualizedList>
             <Divider sx={{ my: 1 }} />
-            <VirtualizedList></VirtualizedList>
+            <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              sx={{ flexGrow: 1 }}
+            >
+              Flow
+            </Typography>
+            <VirtualizedList dataList={startEnd2}></VirtualizedList>
+            <Divider sx={{ my: 1 }} />
+            <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              sx={{ flexGrow: 1 }}
+            >
+              Operation
+            </Typography>
+            <VirtualizedList dataList={startEnd3}></VirtualizedList>
           </List>
         </Drawer>
         <Box
@@ -107,14 +200,14 @@ function DashboardContent() {
           }}
         >
           <Toolbar />
-          <Container maxWidth={false} sx={{ mt: 4, mb: 4 }}>
+          <Container maxWidth={false} sx={{ mt: 4, mb: 4 ,height: "100vh" }}>
             <Grid container spacing={3}>
 
               <Grid item xs={12} md={12} lg={12} xl={12}>
                 <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
                   {/* comboBox & Save Button */}
                   <Stack direction="row" spacing={2}>
-                    <ComboBox></ComboBox>
+                    <ComboBox dataList={factoryList} label = "Factory" onSelect={changeFactoryName} ></ComboBox>
                     <ComboBox></ComboBox>
                     <Button variant="contained">Save</Button>
                   </Stack>
@@ -122,13 +215,15 @@ function DashboardContent() {
               </Grid>
 
 
-              <Grid item xs={12} md={12} lg={12} xl={12} sx={{ height: '100%' }}>
+              <Grid item xs={12} md={12} lg={12} xl={12} sx={{ height: "100vh" , weight:'100%' }}>
                 <Paper
+                  variant="outlined"
                   sx={{
                     p: 2,
                     display: "flex",
                     flexDirection: "column",
-                    height: 240
+                    height: "100vh",
+                    // height: 240
                   }}
                 >
                   {/* Designer */}

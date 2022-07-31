@@ -4,22 +4,24 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { useDispatch, useSelector } from 'react-redux'
 import { changeFactoryName } from '../redux/slices/factorySlice'
 export default function ComboBox(props) {
+  const {dataList,label} = props;
 
   const dispatch = useDispatch();
 
   const handleChange = e => {
     e.preventDefault();
-    dispatch(changeFactoryName(e.target.innerText));
+    dispatch(props.onSelect(e.target.innerText));
+    // dispatch(changeFactoryName(e.target.innerText));
   };
   
   return (
     <Autocomplete
       disablePortal
       id="combo-box-demo"
-      options={top100Films}
+      options={dataList ==null ? top100Films:dataList}
       sx={{ width: 300 }}
       onInputChange={handleChange}
-      renderInput={(params) => <TextField {...params} label="Movie" />}
+      renderInput={(params) => <TextField {...params} label={label} />}
     />
   );
 }
