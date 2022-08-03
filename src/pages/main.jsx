@@ -73,6 +73,8 @@ function DashboardContent() {
 
   const [open, setOpen] = React.useState(true);
   const [factoryList, setfactoryList] = React.useState(null);
+  const [flowList, setflowList] = React.useState(null);
+  const [operationList, setoperationList] = React.useState(null);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -90,11 +92,40 @@ function DashboardContent() {
       console.log(e);
     }
   };
+  const getFlowList = async () => {
+    try {
+      const response = await axios.get( serverAddress+"/flowList");
+      response.data.map( (data,index) =>{ 
+        data['id'] = index;
+        data['name'] = data['processFlowName'];
+      })
+      setflowList(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const getOperationList = async () => {
+    try {
+      const response = await axios.get( serverAddress+"/operationList");
+      response.data.map( (data,index)  =>{ 
+        data['id'] = index;
+        data['name'] = data['processOperationName'];
+      })
+      setoperationList(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   React.useEffect(() => {
     console.log("맨 처음 렌더링될 때 한 번만 실행");
     getFactoryList();
   }, []);
+  React.useEffect(() => {
+    console.log("factoryList수정시");
+    getFlowList();
+    getOperationList();
+  }, [factoryName]);
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -164,7 +195,7 @@ function DashboardContent() {
             >
               Flow
             </Typography>
-            <VirtualizedList dataList={startEnd2}></VirtualizedList>
+            <VirtualizedList dataList={flowList}></VirtualizedList>
             <Divider sx={{ my: 1 }} />
             <Typography
               component="h1"
@@ -175,7 +206,7 @@ function DashboardContent() {
             >
               Operation
             </Typography>
-            <VirtualizedList dataList={startEnd3}></VirtualizedList>
+            <VirtualizedList dataList={operationList}></VirtualizedList>
           </List>
         </Drawer>
         <Box
